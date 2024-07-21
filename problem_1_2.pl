@@ -1,47 +1,44 @@
-% binary tree data structure formation
+% uadd
 
-% adding an empty node as a tree with no children
+% unary addition
 
-add_node(X, nil, tree(X, nil, nil)).
+uadd(X, 0, X).
+uadd(X, s(Y), s(Z)) :-
+    uadd(X, Y, Z).
 
-% add to left if new node is less than root node
-add_node(X, tree(Root, LeftTree, RightTree), tree(Root, NewLeftTree, RightTree)) :-
-    X < Root, add_node(X, LeftTree, NewLeftTree).
+% uadd(s(0), s(s(0)), X).
 
-% add to right if node is greater than root node
-add_node(X, tree(Root, LeftTree, RightTree), tree(Root, LeftTree, NewRightTree)) :-
-    X > Root, add_node(X, RightTree, NewRightTree).
+% unary multiplication
 
-constructAcc([], Tree, Tree).
-constructAcc([H | Tail], Tree, NewTree) :-
-    add_node(H, NewTree, NewTreeWithHead), constructAcc(Tail, Tree, NewTreeWithHead).
+umul(_, 0, 0).
+umul(X, s(Y), Z) :-
+    umul(X, Y, W), uadd(X, W, Z).
 
-construct(Ls, T) :-
-    constructAcc(Ls, T, nil).
+% umul(s(s(0)), s(s(0)), X). 
 
-%  construct([3,2,4,1,5],T).
+% fibonacci sequence
 
-% count nodes is 0 for nil tree
-% count nodes is sum of left and right tree + 1
-count_nodes(nil, 0).
-count_nodes(tree(_, LeftTree, RightTree), Sum) :-
-    count_nodes(LeftTree, LeftNodes), count_nodes(RightTree, RightNodes), Sum is LeftNodes + RightNodes + 1.
+ufib(0, 0).
+ufib(s(0), s(0)).
+ufib(s(s(X)), Y) :-
+    ufib(s(X), Z), ufib(X, W), uadd(Z, W, Y).
 
-% count_nodes(tree(3, tree(2, tree(1, nil, nil), nil), tree(4, nil, tree(5, nil, nil))), Sum).
+% exponentials
 
-count_leafs(nil, 0).
-count_leafs(tree(_, nil, nil), 1).
-count_leafs(tree(_, LeftTree, RightTree), Sum) :-
-    count_leafs(LeftTree, LeftLeaves), count_leafs(RightTree, RightLeaves), Sum is LeftLeaves + RightLeaves.
+uexp(_, 0, s(0)).
+uexp(s(0), _, s(0)).
+uexp(X, s(Y), Z) :-
+    uexp(X, Y, W), umul(X, W, Z).
 
-% count_leafs(tree(3, tree(2, tree(1, nil, nil), nil), tree(4, nil, tree(5, nil, nil))), Sum).
+unary_to_integer(0, 0).
+unary_to_integer(s(X), N) :-
+    unary_to_integer(X, M), N is M + 1.
 
-symmetric(nil).
-symmetric(tree(_, LeftTree, RightTree)) :-
-    mirror(LeftTree, RightTree).
+% unary_to_integer(s(s(s(s(s(s(s(s(0)))))))), Result).
 
-mirror(nil, nil).
-mirror(tree(X, LT1, RT1), tree(X, LT2, RT2)) :-
-    mirror(LT1, RT2), mirror(LT2, RT1).
-    
-%  symmetric(tree(1,tree(2,nil,nil),tree(2,nil,nil))).
+integer_to_unary(0, 0).
+integer_to_unary(N, s(Y)) :-
+    N > 0, M is N - 1,
+    integer_to_unary(M, Y).
+
+% integer_to_unary(8, X).
